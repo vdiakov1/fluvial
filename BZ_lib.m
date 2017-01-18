@@ -1,4 +1,53 @@
 % Oregonator ODEs (following http://www4.ncsu.edu/eos/users/w/white/www/white/ma302/less15.PDF):
+%{ Brief description of functions below:
+callabc() = parameter values for use in yporeg()
+box_it() - not used; attempts to keep all operations within a box
+fx(y) = the 'y1' (or 'x') component of derivatives yporeg(), i.e. dy/dt
+        y is a column vector with 3 components (here and throughout this module)
+fy() and fz() - same as fx(), only for 'y2' (or 'y') and 'y3' (or 'z'), respectively
+fsquare(y) = the square of yporeg(y)
+yporeg(y) = the vector of derivatives dy/dt as defined by the Oregonator model
+steadystate() = the stationary point (where dy/dt = 0)
+deriv(fn,y,dy) = the 'derivative' of fn at point y for increment dy (y & dy are column vectors)
+ascent(fn,y) = the gradient of scalar function fn
+divrgnce(fn,y) = the divergence of fn at point y
+joreg(y,t) = closed-form-calculated Jacobian of yporeg() at point y (t is not used)
+jacobian(fn,y) = the Jacobian of fn at point y
+lateraljacobian(fn,y) = Jacobian of vector-function fn, with removed component along yporeg()
+mid_eig(y) = medium eigen value for the Jacobian of congrad()
+max_eig(y) = maximum eigen value for the Jacobian of congrad()
+confluence(y) = negative lateral (i.e. yporeg-component removed) divergence of yporeg()
+mconfluence(y) = - confluence(y)
+gradconfluence(y) = gradient of confluence(y)
+congrad(y) = lateral gradient (again, 'lateral' means that the yporeg-component is removed) of confluence
+gradgradconfluence - not used
+trackzerocongrads(y) = a guesstimate for another fluvial point assuming y belongs to a fluvium
+                       (fluvii consist of points that maximally attract lateral trajectories
+                        and are defined by lateralgradient(confluence)=0  )
+                       Perhaps, this function can be improved by using lateraljacobian instead of jacobian
+buildzerocurve(yo,dy,n) - finds n fluvial points starting with yo+dy
+                          perhaps, can be improved by replacing @gradconfluence with @congrad
+zerogradfinder(y) = fluvial locus using y as the starting point
+zerograd(y) = zerogradfinder(y) improved by replacing jacobian() with lateraljacobian()
+entrained(y) - scans ODE solution y looking for points that are close to fluvii (i.e. are 'entrained')
+direction(y,p) = the search direction for the fluvium (i.e. the zero-congrad curve)
+abscongrad(y) = the absolute value of congrad(y)
+nextzerograd(y,p) = next fluvial (or, more precisely, zero-congrad) point at distance p from y
+thefirsttwo(y) = two fluvial points, uses y as starting point
+zerogradcurve(y,N) - finds N points where congrad()=0
+validzerograd(y) - checks if y qualifies as a lateral attractor
+next0grad(fr,zy) = next point with congrad()=0, uses the last two points in zy to extrapolate
+                   the starting point with scaling factor fr
+depth(y) = lateral attraction strength estimate
+dispersiveness(y) - not used
+max1D(y1s,y2s,y3s,cs) - from cs values defined on the grid y1s x y2s x y3s,
+                        finds the 'grid-local' maxima in either 'x', 'y' or 'z' direction
+nvrs(j) = inverse of j excluding the smallest eigen-value vector
+cosangle(y1,y2) = cosine of the angle between vectors y1 and y2
+distance(y1,y2) = distance between points y1 and y2
+vectorproduct(x,y) = 3-D vector product of x and y
+normalize(x) = vector x normalized to length 1
+%}
 function [a,b,c] = callabc(); a=77.; b=0.161; c=2e-2; end % c=1e-5; end %
 function res = box_it(x,r1,r2);res=10000*((r1-x)^2*(x<r1)+(x-r2)^2*(x>r2)) ;end % penalty for off-limits 
 function y1=fx(y,a,c); y1 = a*(y(2)-y(1)*y(2)+y(1)-c*y(1)*y(1)); end%
