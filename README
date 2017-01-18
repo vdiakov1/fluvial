@@ -1,0 +1,5 @@
+Repository "fluvial" contains code for fluvial analysis of ODEs
+(ODE = ordinary differential equations; fluvii = places that attract trajectories)
+The code runs in GNU Octave.
+Created January 2017 by vdiakov1
+
