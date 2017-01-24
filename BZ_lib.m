@@ -48,6 +48,7 @@ distance(y1,y2) = distance between points y1 and y2
 vectorproduct(x,y) = 3-D vector product of x and y
 normalize(x) = vector x normalized to length 1
 %}
+dummy = 0 ; % dummy statement to avoid warning on f-n name being different from the file name
 function [a,b,c] = callabc(); a=77.; b=0.161; c=2e-2; end % c=1e-5; end %
 function res = box_it(x,r1,r2);res=10000*((r1-x)^2*(x<r1)+(x-r2)^2*(x>r2)) ;end % penalty for off-limits 
 function y1=fx(y,a,c); y1 = a*(y(2)-y(1)*y(2)+y(1)-c*y(1)*y(1)); end%
