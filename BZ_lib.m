@@ -1,5 +1,6 @@
 % Oregonator ODEs (following http://www4.ncsu.edu/eos/users/w/white/www/white/ma302/less15.PDF):
-%{ Brief description of functions below:
+%{
+ Brief description of functions below:
 callabc() = parameter values for use in yporeg()
 box_it() - not used; attempts to keep all operations within a box
 fx(y) = the 'y1' (or 'x') component of derivatives yporeg(), i.e. dy/dt
@@ -79,6 +80,8 @@ function yc = trackzerocongrads(yd); fn=@congrad; grads=jacobian(fn,yd); vp=-vec
 function zcd = buildzerocurve(yo,dy,nmax);fn=@gradconfluence;zcd=zeros(nmax,length(yo));zcd(1,:)=fsolve(fn,yo)';zcd(2,:)=fsolve(fn,zcd(1,:)'+dy)';for n=3:nmax;zcd(n,:)=fsolve(fn,2*zcd(n-1,:)'-zcd(n-2,:)')';endfor ;end
 function y0=zerogradfinder(y);fn=@congrad;cg=fn(y);j=jacobian(fn,y)';y0=y-nvrs(j')*cg ;end % linear approximation for finding zero-gradient of confluence 
 function y0=zerograd(y);fn=@congrad;cg=fn(y);j=lateraljacobian(fn,y)';y0=y-nvrs(j')*cg ;end % =zerogradfinder() with lateraljacobian() replacing jacobian()
+function dd=from_fluvium(zx);dd=[]; for i=1:size(zx,1); dd(i)=close_to_fluvium(zx(i,:)') ; endfor ;end % close_to_fluvium(), for each element of an array
+function d=close_to_fluvium(y); d = distance(y, zerograd(y)) / distance(y,0*y) ;end % entrained(), for one point
 function yc=entrained(y);yc=[]; for i=10000:1000:size(y,1);y0=y(i,:)';y1=zerograd(y0);if distance(y0,y1)/distance(y0,0*y0)<1e-3;yc=[yc;y1'];endif;endfor; end
 function d=direction(y,p);j=gradgradconfluence(y);d=vectorproduct(j(:,1),j(:,2)) ;if cosangle(d,p)<0;d=-d;endif;end % find the search direction for the zero-congrad curve
 function x=abscongrad(y);cg = congrad(y); x=sqrt(sum(cg.*cg)/sum(y.*y)) ; end %
